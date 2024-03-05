@@ -1,6 +1,5 @@
 package ru.zillent.study.account;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -44,7 +43,7 @@ class AccountTest {
 
 
     @Test
-    void checkWrongCurrencyConstraint() {
+    void WrongCurrencyConstraint() {
         Account account = new Account(testAccountant);
         IllegalArgumentException thrown = assertThrows(
                 IllegalArgumentException.class,
@@ -54,7 +53,7 @@ class AccountTest {
     }
 
     @Test
-    void checkAmountIsPositiveContraint() {
+    void AmountIsPositiveContraint() {
         Account account = new Account(testAccountant);
         IllegalArgumentException thrown = assertThrows(
                 IllegalArgumentException.class,
@@ -64,7 +63,7 @@ class AccountTest {
     }
 
     @Test
-    void checkUndo() throws NothingToUndo {
+    void undo() throws NothingToUndo {
         Account account = new Account(testAccountant);
         assertThrows(NothingToUndo.class, () -> {account.undo();});
         account.setAccountant("NEW");
@@ -85,11 +84,36 @@ class AccountTest {
     }
 
     @Test
-    void checkIsUndoable() throws NothingToUndo {
+    void isUndoable() throws NothingToUndo {
         Account account = new Account(testAccountant);
         assertFalse(account.isUndoable());
         account.setBalance(RUB, 27);
         assertTrue(account.isUndoable());
         assertFalse(account.undo().isUndoable());
+    }
+
+    @Test
+    void saveAndLoad() {
+        Account account = new Account(testAccountant);
+        account.setBalance(RUB, 1);
+        account.setBalance(EUR, 2);
+        Loadable save = account.save();
+        account.setAccountant("TEST1");
+        account.setBalance(RUB, 10);
+        Loadable save1 = account.save();
+        account.setBalance(USD, 35);
+        assertEquals("TEST1", account.getAccountant());
+        assertEquals(10, account.getBalance().get(RUB));
+        assertEquals(35, account.getBalance().get(USD));
+        save.load();
+        assertEquals(testAccountant, account.getAccountant());
+        assertEquals(1, account.getBalance().get(RUB));
+        assertNull(account.getBalance().get(USD));
+        assertEquals(2, account.getBalance().get(EUR));
+        save1.load();
+        assertEquals("TEST1", account.getAccountant());
+        assertEquals(10, account.getBalance().get(RUB));
+        assertNull(account.getBalance().get(USD));
+        assertEquals(2, account.getBalance().get(EUR));
     }
 }

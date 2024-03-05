@@ -4,12 +4,16 @@ import static ru.zillent.study.account.Currency.RUB;
 import static ru.zillent.study.account.Currency.USD;
 
 public class AccountApp {
-    public static void main(String[] args) {
-        System.out.println("Test");
+    public static void main(String[] args) throws NothingToUndo {
         Account account = new Account("Test");
-        account.setBalance(RUB,33);
+        account.setBalance(RUB,31);
         account.setBalance(USD,33);
-        System.out.println(account.getBalance());
+        account.print();
+        Loadable save = account.save();
+        System.out.println(account.isUndoable());
+        account = account.undo();
+        account.print();
+        save.load();
         account.print();
     }
 

@@ -56,4 +56,25 @@ public class Account {
         System.out.println("Balance: ");
         this.balance.forEach((K,V) -> {System.out.println(K+"=>"+V);});
     }
+
+    public Loadable save() {
+        return new Snapshot();
+    }
+
+    private class Snapshot implements Loadable
+    {
+        private String accountant;
+        private HashMap<Currency, Integer> balance;
+
+        public Snapshot() {
+            this.accountant = Account.this.accountant;
+            this.balance = new HashMap<>(Account.this.balance);
+        }
+
+        @Override
+        public void load() {
+            Account.this.accountant = this.accountant;
+            Account.this.balance = new HashMap<>(this.balance);
+        }
+    }
 }
