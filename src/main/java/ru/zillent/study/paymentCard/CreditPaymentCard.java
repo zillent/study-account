@@ -54,9 +54,9 @@ public class CreditPaymentCard extends PaymentCard implements Creditable {
         super.makeTransaction(currency, amount);
     }
 
-    public Object getProxy() {
+    public Creditable getProxy() {
         Class cls = this.getClass();
-        return Proxy.newProxyInstance(
+        return (Creditable) Proxy.newProxyInstance(
                 cls.getClassLoader(),
                 new Class[]{Creditable.class},
                 new CreditableInvocatonHandler(this)
