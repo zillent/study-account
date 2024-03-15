@@ -6,11 +6,14 @@ import ru.zillent.study.account.Currency;
 import java.util.HashMap;
 
 public class PaymentCard {
-    Account account;
-    private String cardNumber;
+    Account account = new Account("CARDHOLDER");
+    private String cardNumber = "XXXX-XXXX-XXXX-XXXX";
 
     public PaymentCard(String cardNumber, Account account) {
         this.account = account;
+    }
+
+    public PaymentCard() {
     }
 
     public void makeTransaction(Currency currency, int amount) throws NotEnoughBalanceException {
@@ -21,7 +24,7 @@ public class PaymentCard {
         this.account.setBalance(currency, balanceAmount - amount);
     };
 
-    public int getBalance(Currency currency) {
+    public Integer getBalance(Currency currency) {
         HashMap<Currency, Integer> balance = this.account.getBalance();
         if (balance.isEmpty()) return 0;
         return balance.getOrDefault(currency, 0);

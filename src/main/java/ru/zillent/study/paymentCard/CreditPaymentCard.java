@@ -3,18 +3,21 @@ package ru.zillent.study.paymentCard;
 import ru.zillent.study.account.Account;
 import ru.zillent.study.account.Currency;
 
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 
 public class CreditPaymentCard extends PaymentCard implements Creditable {
-    private HashMap<Currency, Integer> creditLimits;
-    private HashMap<Currency, Integer> debts;
+    private HashMap<Currency, Integer> creditLimits = new HashMap<>();;
+    private HashMap<Currency, Integer> debts = new HashMap<>();;
+
+    public CreditPaymentCard() {
+    }
 
     public CreditPaymentCard(String cardNumber, Account account) {
         super(cardNumber, account);
-        this.creditLimits = new HashMap<>();
-        this.debts = new HashMap<>();
     }
 
+    @Mutator
     @Override
     public void setLimit(Currency currency, int limit) {
         if (currency == null) throw new IllegalArgumentException("Wrong currency");
@@ -22,14 +25,15 @@ public class CreditPaymentCard extends PaymentCard implements Creditable {
         this.creditLimits.put(currency, limit);
     }
 
+    @Cache
     @Override
-    public int getLimit(Currency currency) {
+    public Integer getLimit(Currency currency) {
         if (this.creditLimits.isEmpty()) return 0;
         return this.creditLimits.getOrDefault(currency, 0);
     }
 
     @Override
-    public int getBalance(Currency currency) {
+    public Integer getBalance(Currency currency) {
         return super.getBalance(currency) + this.getLimit(currency);
     };
 
@@ -48,5 +52,14 @@ public class CreditPaymentCard extends PaymentCard implements Creditable {
             this.account.setBalance(currency, balanceAmount+newBalanceDebt);
         }
         super.makeTransaction(currency, amount);
+    }
+
+    public Object getProxy() {
+        Class cls = this.getClass();
+        return Proxy.newProxyInstance(
+                cls.getClassLoader(),
+                new Class[]{Creditable.class},
+                new CreditableInvocatonHandler(this)
+                );
     }
 }

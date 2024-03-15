@@ -6,5 +6,5 @@ public interface Creditable {
 
     public void setLimit(Currency currency, int limit);
 
-    public int getLimit(Currency currency);
+    public Integer getLimit(Currency currency);
 }
