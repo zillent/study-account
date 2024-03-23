@@ -15,6 +15,7 @@ public class AccountApp {
         account.print();
         save.load();
         account.print();
+//        System.out.println(RUB==RUB);
     }
 
 }

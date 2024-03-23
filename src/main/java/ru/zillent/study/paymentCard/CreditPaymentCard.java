@@ -10,8 +10,7 @@ public class CreditPaymentCard extends PaymentCard implements Creditable {
     private HashMap<Currency, Integer> creditLimits = new HashMap<>();;
     private HashMap<Currency, Integer> debts = new HashMap<>();;
 
-    public CreditPaymentCard() {
-    }
+    public CreditPaymentCard() {}
 
     public CreditPaymentCard(String cardNumber, Account account) {
         super(cardNumber, account);
@@ -25,7 +24,7 @@ public class CreditPaymentCard extends PaymentCard implements Creditable {
         this.creditLimits.put(currency, limit);
     }
 
-    @Cache
+    @Cache(timeToLive = 1000)
     @Override
     public Integer getLimit(Currency currency) {
         if (this.creditLimits.isEmpty()) return 0;
